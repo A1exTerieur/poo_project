@@ -8,7 +8,9 @@ import java.io.FileNotFoundException;
 
 import objects.Manel;
 import objects.Stair;
+import objects.Trap;
 import objects.Wall;
+import objects.DonkeyKong;
 import objects.Door;
 
 import pt.iscte.poo.gui.ImageGUI;
@@ -19,6 +21,9 @@ public class Room {
 	
     private List<Wall> walls = new ArrayList<>();
     private List<Stair> stairs = new ArrayList<>();
+    private List<Trap> traps = new ArrayList<>();
+    private List<DonkeyKong> donkeyKongs= new ArrayList<>();
+
 	private Point2D heroStartingPosition = new Point2D(1, 1);
 	private Manel manel;
 	private Door nextRoomTile;
@@ -82,13 +87,23 @@ public class Room {
 	                        case 'H': // Position du héros
 	                            heroStartingPosition = new Point2D(x, y);
 	                            break;
-	                        case '0': // Case menant à la salle suivante
+	                        case 't': // trap
+	                        	Trap trap = new Trap(x, y);
+	                        	traps.add(trap);
+	                            ImageGUI.getInstance().addImage(trap);
+	                            break;
+	                        case '0': // next level
 	                            nextRoomTile = new Door(x,y);
 	                            break;
 	                        case 'S': // Escalier
 	                            Stair stair = new Stair(x, y);
 	                            stairs.add(stair);
 	                            ImageGUI.getInstance().addImage(stair);
+	                            break;
+	                        case 'G': // Escalier
+	                            DonkeyKong donkeyKong = new DonkeyKong(new Point2D(x,y));
+	                            donkeyKongs.add(donkeyKong);
+	                            ImageGUI.getInstance().addImage(donkeyKong);
 	                            break;
 	                    }
 	                }
@@ -117,6 +132,15 @@ public class Room {
         }
         return false;
     }
+    
+    public boolean isTrap(Point2D position) {
+        for (Trap trap : traps) {
+            if (trap.getPosition().equals(position)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private boolean isNextRoomTile(Point2D position) {
         return position.equals(nextRoomTile.getPosition());
@@ -128,6 +152,10 @@ public class Room {
     
     public Manel getManel() {
 		return manel;
+	}
+    
+    public List<DonkeyKong> getDonkeyKongs() {
+		return donkeyKongs;
 	}
 	
 }

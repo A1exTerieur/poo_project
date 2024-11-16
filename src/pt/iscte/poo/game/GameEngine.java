@@ -1,5 +1,6 @@
 package pt.iscte.poo.game;
 
+import objects.DonkeyKong;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.observer.Observed;
 import pt.iscte.poo.observer.Observer;
@@ -41,6 +42,7 @@ public class GameEngine implements Observer {
 	private void processTick() {
 		System.out.println("Tic Tac : " + lastTickProcessed);
 		applyGravity();
+		moveDonkeyKongs(); 
 		lastTickProcessed++;
 	}
 
@@ -54,11 +56,19 @@ public class GameEngine implements Observer {
 	private void applyGravity() {
 	    Point2D belowPosition = currentRoom.getManel().getPosition().plus(Direction.DOWN.asVector());
 	    
-	    if (!currentRoom.isWall(belowPosition) && !currentRoom.isStair(belowPosition)) {
+	    if (!currentRoom.isWall(belowPosition) && !currentRoom.isStair(belowPosition) && !currentRoom.isTrap(belowPosition)) {
 	        currentRoom.getManel().move(Direction.DOWN);
 	        ImageGUI.getInstance().update();
 	    }
 	}
 	
+	private void moveDonkeyKongs() {
+		for (DonkeyKong dk : currentRoom.getDonkeyKongs()) {
+			dk.moveRandom();
+			dk.tryShootBanana();
+			dk.updateBananas();
+		}
+		ImageGUI.getInstance().update();
+	}
 
 }

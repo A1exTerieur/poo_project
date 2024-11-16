@@ -5,7 +5,8 @@ import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
 
 public class Manel implements ImageTile {
-
+	
+	private int life = 3;
 	private Point2D position;
 	
 	public Manel(Point2D initialPosition){
@@ -30,6 +31,18 @@ public class Manel implements ImageTile {
 
 	public void move(Direction dir) {
 		position = position.plus(dir.asVector());	
+	}
+	
+	public int getLife() {
+		return life;
+	}
+	
+	private void removeLife() {
+		life--;
+	}
+	
+	private void addLife() {
+		life++;
 	}
 	
 }
