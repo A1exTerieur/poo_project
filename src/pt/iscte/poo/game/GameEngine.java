@@ -54,11 +54,9 @@ public class GameEngine implements Observer {
 	private void applyGravity() {
 	    Point2D belowPosition = currentRoom.getManel().getPosition().plus(Direction.DOWN.asVector());
 	    
-	    // Vérifie si Manel doit tomber
 	    if (!currentRoom.isWall(belowPosition) && !currentRoom.isStair(belowPosition)) {
 	        currentRoom.getManel().move(Direction.DOWN);
 	        ImageGUI.getInstance().update();
-	        System.out.println("Manel tombe sous l'effet de la gravité !");
 	    }
 	}
 	

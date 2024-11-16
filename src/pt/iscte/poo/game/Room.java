@@ -9,6 +9,8 @@ import java.io.FileNotFoundException;
 import objects.Manel;
 import objects.Stair;
 import objects.Wall;
+import objects.Door;
+
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
@@ -19,13 +21,14 @@ public class Room {
     private List<Stair> stairs = new ArrayList<>();
 	private Point2D heroStartingPosition = new Point2D(1, 1);
 	private Manel manel;
-	private Point2D nextRoomTile;
+	private Door nextRoomTile;
     private String nextRoomFile;
 	
 	public Room(String roomFile) {
         loadRoom(roomFile);
         manel = new Manel(heroStartingPosition);
         ImageGUI.getInstance().addImage(manel);
+        ImageGUI.getInstance().addImage(nextRoomTile);
 
         for (Wall wall : walls) {
             ImageGUI.getInstance().addImage(wall);
@@ -77,7 +80,7 @@ public class Room {
 	                            heroStartingPosition = new Point2D(x, y);
 	                            break;
 	                        case '0': // Case menant à la salle suivante
-	                            nextRoomTile = new Point2D(x, y);
+	                            nextRoomTile = new Door(x,y);
 	                            break;
 	                        case 'S': // Escalier
 	                            Stair stair = new Stair(x, y);
@@ -113,7 +116,7 @@ public class Room {
     }
 
     private boolean isNextRoomTile(Point2D position) {
-        return position.equals(nextRoomTile);
+        return position.equals(nextRoomTile.getPosition());
     }
     
     public String getNextRoomFile() {
