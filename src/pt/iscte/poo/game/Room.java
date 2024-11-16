@@ -28,7 +28,10 @@ public class Room {
         loadRoom(roomFile);
         manel = new Manel(heroStartingPosition);
         ImageGUI.getInstance().addImage(manel);
-        ImageGUI.getInstance().addImage(nextRoomTile);
+        if(nextRoomTile != null) {
+        	ImageGUI.getInstance().addImage(nextRoomTile);
+        }
+      
 
         for (Wall wall : walls) {
             ImageGUI.getInstance().addImage(wall);
@@ -49,7 +52,7 @@ public class Room {
         		manel.move(dir);
         	}
         	
-            if (isNextRoomTile(targetPosition)) {
+            if (nextRoomTile != null && isNextRoomTile(targetPosition)) {
                 return true;
             }
 
