@@ -11,5 +11,4 @@ public class Main {
 		gui.registerObserver(engine);
 		gui.go();
 	}
-	
 }
