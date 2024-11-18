@@ -29,7 +29,7 @@ public class GameEngine implements Observer {
 			if (Direction.isDirection(k) && !stuckByDk()) {
 			    System.out.println("Direction! ");
 			    boolean nextRoomTriggered = currentRoom.moveManel(Direction.directionFor(k));
-			    if(currentRoom.isSword(currentRoom.getManel().getPosition())) {
+			    if(currentRoom.getSword() != null && currentRoom.isSword(currentRoom.getManel().getPosition())) {
 			    	currentRoom.getManel().increaseDamage(currentRoom.getSword().getDamage());
 			    	System.out.println("Manel damage = "+currentRoom.getManel().getDamage());
 			    }
