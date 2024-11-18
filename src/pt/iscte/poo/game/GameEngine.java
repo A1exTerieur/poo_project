@@ -1,5 +1,6 @@
 package pt.iscte.poo.game;
 
+import objects.Banana;
 import objects.DonkeyKong;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.observer.Observed;
@@ -43,7 +44,19 @@ public class GameEngine implements Observer {
 		System.out.println("Tic Tac : " + lastTickProcessed);
 		applyGravity();
 		moveDonkeyKongs(); 
+		hitByBanana();
 		lastTickProcessed++;
+	}
+	
+	private void hitByBanana() {
+		for(DonkeyKong ban: currentRoom.getDonkeyKongs()) {
+			for(Banana elt: ban.getBananas()) {
+				if(currentRoom.getManel().getPosition().equals(elt.getPosition())) {
+					currentRoom.getManel().removeLife();
+					System.out.println("Current life : "+currentRoom.getManel().getLife());
+				}
+			}
+		}
 	}
 
 	public void loadRoom(String nextRoomFile) {

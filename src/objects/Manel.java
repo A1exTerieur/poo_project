@@ -37,11 +37,11 @@ public class Manel implements ImageTile {
 		return life;
 	}
 	
-	private void removeLife() {
+	public void removeLife() {
 		life--;
 	}
 	
-	private void addLife() {
+	public void addLife() {
 		life++;
 	}
 	
