@@ -2,6 +2,7 @@ package pt.iscte.poo.game;
 
 import objects.Banana;
 import objects.DonkeyKong;
+import objects.Manel;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.observer.Observed;
 import pt.iscte.poo.observer.Observer;
@@ -25,9 +26,13 @@ public class GameEngine implements Observer {
 		if (ImageGUI.getInstance().wasKeyPressed()) {
 			int k = ImageGUI.getInstance().keyPressed();
 			System.out.println("Keypressed " + k);
-			if (Direction.isDirection(k)) {
+			if (Direction.isDirection(k) && !stuckByDk()) {
 			    System.out.println("Direction! ");
 			    boolean nextRoomTriggered = currentRoom.moveManel(Direction.directionFor(k));
+			    if(currentRoom.isSword(currentRoom.getManel().getPosition())) {
+			    	currentRoom.getManel().increaseDamage(currentRoom.getSword().getDamage());
+			    	System.out.println("Manel damage = "+currentRoom.getManel().getDamage());
+			    }
 			    if (nextRoomTriggered) {
 			        loadRoom(currentRoom.getNextRoomFile());
 			    }
@@ -48,11 +53,23 @@ public class GameEngine implements Observer {
 		lastTickProcessed++;
 	}
 	
+	private boolean stuckByDk() {
+		for(DonkeyKong dk: currentRoom.getDonkeyKongs()) {
+			if((dk.getPosition().getY() == currentRoom.getManel().getPosition().getY()) && (dk.getPosition().getX() + 1 == currentRoom.getManel().getPosition().getX()) && (dk.getPosition().getX() < currentRoom.getManel().getPosition().getX())) {
+				currentRoom.getManel().removeLife(dk.getDamage());
+				dk.removeLife(currentRoom.getManel().getDamage());
+				System.out.println("Current life : "+currentRoom.getManel().getLife());
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	private void hitByBanana() {
 		for(DonkeyKong ban: currentRoom.getDonkeyKongs()) {
 			for(Banana elt: ban.getBananas()) {
 				if(currentRoom.getManel().getPosition().equals(elt.getPosition())) {
-					currentRoom.getManel().removeLife();
+					currentRoom.getManel().removeLife(10);
 					System.out.println("Current life : "+currentRoom.getManel().getLife());
 				}
 			}

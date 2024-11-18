@@ -11,8 +11,9 @@ import java.util.Random;
 
 public class DonkeyKong implements ImageTile {
 
-	private int life = 3;
+	private int life = 100;
 	private Point2D position;
+	private final int damage = 10;
 	private Random rand = new Random();
 	private List<Banana> bananas = new ArrayList<>();
 
@@ -29,6 +30,10 @@ public class DonkeyKong implements ImageTile {
 	@Override
 	public Point2D getPosition() {
 		return position;
+	}
+	
+	public int getDamage() {
+		return damage;
 	}
 
 	@Override
@@ -62,12 +67,12 @@ public class DonkeyKong implements ImageTile {
 		return life;
 	}
 
-	private void removeLife() {
-		life--;
+	public void removeLife(int damage) {
+		life-=damage;
 	}
-
-	private void addLife() {
-		life++;
+	
+	public void addLife(int hp) {
+		life+=hp;
 	}
 
 	public List<Banana> getBananas() {

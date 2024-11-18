@@ -8,6 +8,7 @@ public class Manel implements ImageTile {
 	
 	private int life = 3;
 	private Point2D position;
+	private int damage = 15;
 	
 	public Manel(Point2D initialPosition){
 		position = initialPosition;
@@ -37,12 +38,20 @@ public class Manel implements ImageTile {
 		return life;
 	}
 	
-	public void removeLife() {
-		life--;
+	public int getDamage() {
+		return damage;
 	}
 	
-	public void addLife() {
-		life++;
+	public void increaseDamage(int point) {
+		damage+=point;
+	}
+	
+	public void removeLife(int damage) {
+		life-=damage;
+	}
+	
+	public void addLife(int hp) {
+		life+=hp;
 	}
 	
 }

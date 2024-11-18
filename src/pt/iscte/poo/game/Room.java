@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 
 import objects.Manel;
 import objects.Stair;
+import objects.Sword;
 import objects.Trap;
 import objects.Wall;
 import objects.DonkeyKong;
@@ -28,6 +29,7 @@ public class Room {
 	private Manel manel;
 	private Door nextRoomTile;
     private String nextRoomFile;
+    private Sword sword;
 	
 	public Room(String roomFile) {
         loadRoom(roomFile);
@@ -54,7 +56,9 @@ public class Room {
         			  manel.move(dir);
         		}
         	}else {
+        		
         		manel.move(dir);
+        		
         	}
         	
             if (nextRoomTile != null && isNextRoomTile(targetPosition)) {
@@ -100,6 +104,11 @@ public class Room {
 	                            stairs.add(stair);
 	                            ImageGUI.getInstance().addImage(stair);
 	                            break;
+	                        case 's': // Escalier
+	                        	Sword sword = new Sword(new Point2D(x, y), 20);
+	                            this.sword = sword;
+	                            ImageGUI.getInstance().addImage(sword);
+	                            break;
 	                        case 'G': // Escalier
 	                            DonkeyKong donkeyKong = new DonkeyKong(new Point2D(x,y));
 	                            donkeyKongs.add(donkeyKong);
@@ -122,6 +131,13 @@ public class Room {
             }
         }
         return false;
+    }
+    
+    public boolean isSword(Point2D position) {
+    	if (sword.getPosition().equals(position)) {
+            return true;
+        }
+    	return false;
     }
     
     public boolean isStair(Point2D position) {
@@ -153,6 +169,10 @@ public class Room {
     public Manel getManel() {
 		return manel;
 	}
+    
+    public Sword getSword() {
+    	return sword;
+    }
     
     public List<DonkeyKong> getDonkeyKongs() {
 		return donkeyKongs;

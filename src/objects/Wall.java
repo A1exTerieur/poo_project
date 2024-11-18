@@ -26,6 +26,4 @@ public class Wall implements ImageTile {
 	public Point2D getPosition() {
 		return new Point2D(x, y);
 	}
-
-	
 }
