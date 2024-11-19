@@ -13,7 +13,7 @@ import objects.Trap;
 import objects.Wall;
 import objects.DonkeyKong;
 import objects.Door;
-
+import objects.Floor;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
@@ -43,6 +43,8 @@ public class Room {
         for (Wall wall : walls) {
             ImageGUI.getInstance().addImage(wall);
         }
+        
+        //ImageGUI.getInstance().addImage();
     }
 
 	public boolean moveManel(Direction dir) {
@@ -114,7 +116,12 @@ public class Room {
 	                            donkeyKongs.add(donkeyKong);
 	                            ImageGUI.getInstance().addImage(donkeyKong);
 	                            break;
+	                        
+	                        	
 	                    }
+	                    Floor floor = new Floor(x, y);
+                        ImageGUI.getInstance().addImage(floor);
+
 	                }
 	                y++;
 	            }
