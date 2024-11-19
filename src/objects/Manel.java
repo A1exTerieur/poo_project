@@ -6,7 +6,7 @@ import pt.iscte.poo.utils.Point2D;
 
 public class Manel implements ImageTile {
 	
-	private int life = 3;
+	private int life = 100;
 	private Point2D position;
 	private int damage = 15;
 	

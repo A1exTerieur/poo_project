@@ -11,8 +11,6 @@ import pt.iscte.poo.utils.Point2D;
 
 public class GameEngine implements Observer {
 	
-	
-	
 	private Room currentRoom = new Room("rooms/room0.txt");
 	private int lastTickProcessed = 0;
 	
@@ -31,9 +29,15 @@ public class GameEngine implements Observer {
 			    boolean nextRoomTriggered = currentRoom.moveManel(Direction.directionFor(k));
 			    if(currentRoom.getSword() != null && currentRoom.isSword(currentRoom.getManel().getPosition())) {
 			    	currentRoom.getManel().increaseDamage(currentRoom.getSword().getDamage());
+			    	currentRoom.setSwordNull();
 			    	System.out.println("Manel damage = "+currentRoom.getManel().getDamage());
 			    }
-			    if (nextRoomTriggered) {
+			    if(currentRoom.getMeat() != null && currentRoom.isMeat(currentRoom.getManel().getPosition())) {
+			    	currentRoom.getMeat().regainFullHp(currentRoom.getManel());
+			    	currentRoom.setMeatNull();
+			    	System.out.println("Manel life = "+currentRoom.getManel().getLife());
+			    }
+			    if (nextRoomTriggered && currentRoom.getDonkeyKongs().isEmpty()) {
 			        loadRoom(currentRoom.getNextRoomFile());
 			    }
 			}
@@ -47,17 +51,28 @@ public class GameEngine implements Observer {
 
 	private void processTick() {
 		System.out.println("Tic Tac : " + lastTickProcessed);
+		checkManelLife();
 		applyGravity();
 		moveDonkeyKongs(); 
 		hitByBanana();
 		lastTickProcessed++;
 	}
 	
+	private void checkManelLife() {
+		if(currentRoom.getManel().getLife() <= 0) {
+			currentRoom.manelRemove();
+			loadRoom("room0.txt");
+		}
+	}
+	
 	private boolean stuckByDk() {
 		for(DonkeyKong dk: currentRoom.getDonkeyKongs()) {
-			if((dk.getPosition().getY() == currentRoom.getManel().getPosition().getY()) && (dk.getPosition().getX() + 1 == currentRoom.getManel().getPosition().getX()) && (dk.getPosition().getX() < currentRoom.getManel().getPosition().getX())) {
+			if((dk.getPosition().getY() == currentRoom.getManel().getPosition().getY()) && (dk.getPosition().getX() + 1 == currentRoom.getManel().getPosition().getX()) && (dk.getPosition().getX() < currentRoom.getManel().getPosition().getX()) || dk.getPosition().equals(currentRoom.getManel().getPosition())) {
 				currentRoom.getManel().removeLife(dk.getDamage());
 				dk.removeLife(currentRoom.getManel().getDamage());
+				if(dk.getLife() <= 0) {
+					currentRoom.dkRemove(dk);
+				}
 				System.out.println("Current life : "+currentRoom.getManel().getLife());
 				return true;
 			}
@@ -69,7 +84,7 @@ public class GameEngine implements Observer {
 		for(DonkeyKong ban: currentRoom.getDonkeyKongs()) {
 			for(Banana elt: ban.getBananas()) {
 				if(currentRoom.getManel().getPosition().equals(elt.getPosition())) {
-					currentRoom.getManel().removeLife(10);
+					currentRoom.getManel().removeLife(30);
 					System.out.println("Current life : "+currentRoom.getManel().getLife());
 				}
 			}

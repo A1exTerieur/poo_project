@@ -13,7 +13,7 @@ public class DonkeyKong implements ImageTile {
 
 	private int life = 100;
 	private Point2D position;
-	private final int damage = 10;
+	private final int damage = 20;
 	private Random rand = new Random();
 	private List<Banana> bananas = new ArrayList<>();
 

@@ -13,7 +13,7 @@ import objects.Trap;
 import objects.Wall;
 import objects.DonkeyKong;
 import objects.Door;
-
+import objects.GoodMeat;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
@@ -30,6 +30,7 @@ public class Room {
 	private Door nextRoomTile;
     private String nextRoomFile;
     private Sword sword;
+    private GoodMeat meat;
 	
 	public Room(String roomFile) {
         loadRoom(roomFile);
@@ -96,6 +97,11 @@ public class Room {
 	                        	traps.add(trap);
 	                            ImageGUI.getInstance().addImage(trap);
 	                            break;
+	                        case 'm': // trap
+	                        	GoodMeat meat = new GoodMeat(new Point2D(x, y));
+	                        	this.meat = meat;
+	                            ImageGUI.getInstance().addImage(meat);
+	                            break;
 	                        case '0': // next level
 	                            nextRoomTile = new Door(x,y);
 	                            break;
@@ -131,6 +137,13 @@ public class Room {
             }
         }
         return false;
+    }
+    
+    public boolean isMeat(Point2D position) {
+    	if (meat.getPosition().equals(position)) {
+            return true;
+        }
+    	return false;
     }
     
     public boolean isSword(Point2D position) {
@@ -170,8 +183,33 @@ public class Room {
 		return manel;
 	}
     
+    public GoodMeat getMeat() {
+    	return meat;
+    }
+    
     public Sword getSword() {
     	return sword;
+    }
+    
+    public void dkRemove(DonkeyKong dk) {
+    	donkeyKongs.remove(dk);
+    	ImageGUI.getInstance().removeImage(dk);
+    }
+    
+    public void manelRemove() {
+    	ImageGUI.getInstance().removeImage(manel);
+
+    	
+    }
+    
+    public void setSwordNull() {
+    	ImageGUI.getInstance().removeImage(sword);
+    	sword = null;
+    }
+    
+    public void setMeatNull() {
+    	ImageGUI.getInstance().removeImage(meat);
+    	meat = null;
     }
     
     public List<DonkeyKong> getDonkeyKongs() {
