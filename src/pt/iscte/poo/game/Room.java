@@ -13,6 +13,7 @@ import objects.Trap;
 import objects.Wall;
 import objects.DonkeyKong;
 import objects.Door;
+import objects.Floor;
 import objects.GoodMeat;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.utils.Direction;
@@ -121,6 +122,10 @@ public class Room {
 	                            ImageGUI.getInstance().addImage(donkeyKong);
 	                            break;
 	                    }
+	                    
+	                    Floor floor = new Floor(x, y);
+                        ImageGUI.getInstance().addImage(floor);
+	                    
 	                }
 	                y++;
 	            }
