@@ -2,7 +2,6 @@ package pt.iscte.poo.game;
 
 import objects.Banana;
 import objects.DonkeyKong;
-import objects.Manel;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.observer.Observed;
 import pt.iscte.poo.observer.Observer;
@@ -26,19 +25,10 @@ public class GameEngine implements Observer {
 			System.out.println("Keypressed " + k);
 			if (Direction.isDirection(k) && !stuckByDk()) {
 			    System.out.println("Direction! ");
-			    boolean nextRoomTriggered = currentRoom.moveManel(Direction.directionFor(k));
-			    if(currentRoom.getSword() != null && currentRoom.isSword(currentRoom.getManel().getPosition())) {
-			    	currentRoom.getManel().increaseDamage(currentRoom.getSword().getDamage());
-			    	currentRoom.setSwordNull();
-			    	System.out.println("Manel damage = "+currentRoom.getManel().getDamage());
-			    }
-			    if(currentRoom.getMeat() != null && currentRoom.isMeat(currentRoom.getManel().getPosition())) {
-			    	currentRoom.getMeat().regainFullHp(currentRoom.getManel());
-			    	currentRoom.setMeatNull();
-			    	System.out.println("Manel life = "+currentRoom.getManel().getLife());
-			    }
-			    if (nextRoomTriggered && currentRoom.getDonkeyKongs().isEmpty()) {
-			        loadRoom(currentRoom.getNextRoomFile());
+			    int nextRoomTriggered = currentRoom.moveManel(Direction.directionFor(k));
+			    
+			    if(nextRoomTriggered == 2) {
+			    	loadRoom(currentRoom.getNextRoomFile());
 			    }
 			}
 		}
@@ -46,6 +36,7 @@ public class GameEngine implements Observer {
 		while (lastTickProcessed < t) {
 			processTick();
 		}
+		ImageGUI.getInstance().setStatusMessage("Life : "+ currentRoom.getManel().getLife()+ " | Damage : "+currentRoom.getManel().getDamage());
 		ImageGUI.getInstance().update();
 	}
 
@@ -60,7 +51,6 @@ public class GameEngine implements Observer {
 	
 	private void checkManelLife() {
 		if(currentRoom.getManel().getLife() <= 0) {
-			currentRoom.manelRemove();
 			loadRoom("room0.txt");
 		}
 	}
@@ -114,6 +104,10 @@ public class GameEngine implements Observer {
 			dk.updateBananas();
 		}
 		ImageGUI.getInstance().update();
+	}
+	
+	public Room getCurrentRoom() {
+		return currentRoom;
 	}
 
 }
