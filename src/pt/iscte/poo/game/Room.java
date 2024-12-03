@@ -32,15 +32,16 @@ public class Room {
 	private String nextRoomFile;
 
 
-	public Room(String roomFile) {
+	public Room(String roomFile, Manel manel) {
 		loadRoom(roomFile);
-		manel = new Manel(heroStartingPosition, this);
+		this.manel = manel;
+		this.manel.setPosition(heroStartingPosition);
 		ImageGUI.getInstance().addImage(manel);
 
 	}
 
-	public int moveManel(Direction dir) {
-		return manel.move(dir);
+	public int moveManel(Direction dir, boolean gravity) {
+		return manel.move(dir, this, gravity);
 	}
 
 	private void loadRoom(String roomFile) {
@@ -88,7 +89,7 @@ public class Room {
 
 						
 					}
-					ImageGUI.getInstance().addImage(new Floor(x, y));
+					new Floor(x, y);
 					
 				}
 				y++;
@@ -121,6 +122,10 @@ public class Room {
 	public Manel getManel() {
 		return manel;
 	}
+	
+	public Point2D getHeroStartingPosition() {
+		return heroStartingPosition;
+	}
 
 	public List<DonkeyKong> getDonkeyKongs() {
 		return donkeyKongs;
@@ -128,7 +133,9 @@ public class Room {
 
 	public void dkRemove(DonkeyKong dk) {
 		donkeyKongs.remove(dk);
+		dk.clearBananas();
 		ImageGUI.getInstance().removeImage(dk);
+		
 	}
 
 	public List<Consumable> getLevelConsumables() {

@@ -10,11 +10,9 @@ public class Manel implements ImageTile {
 	private int life = 100;
 	private Point2D position;
 	private int damage = 15;
-	 private Room room; 
 	
-	public Manel(Point2D initialPosition, Room room){
+	public Manel(Point2D initialPosition){
 		position = initialPosition;
-		this.room = room;
 	}
 	
 	@Override
@@ -32,16 +30,18 @@ public class Manel implements ImageTile {
 		return 2;
 	}
 
-	public int move(Direction dir) {
+	public int move(Direction dir, Room room, boolean gravity) {
         Point2D targetPosition = this.position.plus(dir.asVector());
+        
+        
 
-        if (room.isWall(targetPosition)) {
+        if (room.isWall(targetPosition) || targetPosition.getX() < 0 || targetPosition.getX() > 9 ) {
             System.out.println("Blocked by a wall!");
             return -1;
         }
 
         if (dir == Direction.UP || dir == Direction.DOWN) {
-            if (!room.isStair(targetPosition) && !room.isStair(position)) {
+            if (!gravity && !room.isStair(targetPosition) && !room.isStair(position)) {
                 System.out.println("Cannot move vertically without stairs!");
                 return -1;
             }
@@ -57,7 +57,7 @@ public class Manel implements ImageTile {
 
         this.position = targetPosition;
         System.out.println("Moved to " + targetPosition);
-        useItemAtPosition(targetPosition);
+        useItemAtPosition(targetPosition, room);
         return 1;
     }
 	
@@ -81,7 +81,11 @@ public class Manel implements ImageTile {
 		life+=hp;
 	}
 	
-    public void useItemAtPosition(Point2D targetPosition) {
+	public void setPosition(Point2D position) {
+		this.position = position;
+	}
+	
+    public void useItemAtPosition(Point2D targetPosition, Room room) {
         room.getLevelConsumables().stream()
             .filter(item -> item.getPosition().equals(targetPosition))
             .findFirst()

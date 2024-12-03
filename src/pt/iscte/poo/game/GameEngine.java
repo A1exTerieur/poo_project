@@ -2,6 +2,7 @@ package pt.iscte.poo.game;
 
 import objects.Banana;
 import objects.DonkeyKong;
+import objects.Manel;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.observer.Observed;
 import pt.iscte.poo.observer.Observer;
@@ -9,11 +10,13 @@ import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
 
 public class GameEngine implements Observer {
-	
-	private Room currentRoom = new Room("rooms/room0.txt");
+	private Manel manel;
+	private Room currentRoom;
 	private int lastTickProcessed = 0;
 	
 	public GameEngine() {
+		this.manel = new Manel(new Point2D(0,0));
+		this.currentRoom = new Room("rooms/room0.txt", manel);
 		ImageGUI.getInstance().update();
 	}
 
@@ -25,8 +28,8 @@ public class GameEngine implements Observer {
 			System.out.println("Keypressed " + k);
 			if (Direction.isDirection(k) && !stuckByDk()) {
 			    System.out.println("Direction! ");
-			    int nextRoomTriggered = currentRoom.moveManel(Direction.directionFor(k));
-			    
+			    int nextRoomTriggered = currentRoom.moveManel(Direction.directionFor(k), false);
+			    hitByBanana();
 			    if(nextRoomTriggered == 2) {
 			    	loadRoom(currentRoom.getNextRoomFile());
 			    }
@@ -42,16 +45,18 @@ public class GameEngine implements Observer {
 
 	private void processTick() {
 		System.out.println("Tic Tac : " + lastTickProcessed);
+		hitByBanana();
 		checkManelLife();
 		applyGravity();
 		moveDonkeyKongs(); 
-		hitByBanana();
+		
 		lastTickProcessed++;
 	}
 	
 	private void checkManelLife() {
 		if(currentRoom.getManel().getLife() <= 0) {
 			loadRoom("room0.txt");
+			this.manel = new Manel(new Point2D(0,0));
 		}
 	}
 	
@@ -84,7 +89,7 @@ public class GameEngine implements Observer {
 	public void loadRoom(String nextRoomFile) {
 	    System.out.println("Loading next room: " + nextRoomFile);
 	    ImageGUI.getInstance().clearImages();
-	    currentRoom = new Room("rooms/" + nextRoomFile);
+	    currentRoom = new Room("rooms/" + nextRoomFile, manel);
 	    ImageGUI.getInstance().update();
 	}
 	
@@ -92,7 +97,7 @@ public class GameEngine implements Observer {
 	    Point2D belowPosition = currentRoom.getManel().getPosition().plus(Direction.DOWN.asVector());
 	    
 	    if (!currentRoom.isWall(belowPosition) && !currentRoom.isStair(belowPosition) && !currentRoom.isTrap(belowPosition)) {
-	        currentRoom.getManel().move(Direction.DOWN);
+	        currentRoom.moveManel(Direction.DOWN, true);
 	        ImageGUI.getInstance().update();
 	    }
 	}
@@ -103,6 +108,7 @@ public class GameEngine implements Observer {
 			dk.tryShootBanana();
 			dk.updateBananas();
 		}
+		
 		ImageGUI.getInstance().update();
 	}
 	

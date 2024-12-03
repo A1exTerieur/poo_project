@@ -1,5 +1,6 @@
 package objects;
 
+import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.gui.ImageTile;
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
@@ -77,5 +78,13 @@ public class DonkeyKong implements ImageTile {
 
 	public List<Banana> getBananas() {
 		return bananas;
+	}
+
+	public void clearBananas() {
+		for(Banana el : bananas) {
+			ImageGUI.getInstance().removeImage(el);
+
+		}
+		bananas.clear();
 	}
 }
