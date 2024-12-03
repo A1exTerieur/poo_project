@@ -26,7 +26,6 @@ public enum Direction implements Serializable {
 	}
 	
 	public static Direction directionFor(int keyCode) {
-		System.out.println(keyCode);
 		
 		switch(keyCode){
 			case KeyEvent.VK_DOWN:

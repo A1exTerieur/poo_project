@@ -15,6 +15,6 @@ public class GoodMeat extends Consumable {
     @Override
     public void use(Manel manel) {
         int hpToRegain = 100 - manel.getLife();
-        manel.addLife(hpToRegain);
+        //manel.addLife(hpToRegain);
     }
 }

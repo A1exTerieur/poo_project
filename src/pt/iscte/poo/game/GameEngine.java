@@ -32,14 +32,16 @@ public class GameEngine implements Observer {
 			int k = ImageGUI.getInstance().keyPressed();
 			if (Direction.isDirection(k) && !stuckByDk()) {
 			    Actions result = currentRoom.moveManel(Direction.directionFor(k), false);
-			    hitByBanana();
+			    
 			    switch(result) {
-			    	case DOOR : loadRoom(currentRoom.getNextRoomFile());
-			    	case PRINCESS : closeGame();
+			    	case DOOR : loadRoom(currentRoom.getNextRoomFile()); break;
+			    	case PRINCESS : closeGame(); break;
 			    	case OK :
 				default:
 					break; 
 			    }
+			    
+			    hitByBanana();
 			    
 			    
 			}
@@ -62,12 +64,12 @@ public class GameEngine implements Observer {
 
 	private void processTick() {
 		System.out.println("Tic Tac : " + lastTickProcessed);
-		hitByBanana();
 		checkManelLife();
 		applyGravity();
 		moveDonkeyKongs(); 
 		checkTrap();
-		
+		hitByBanana();
+
 		lastTickProcessed++;
 	}
 	
