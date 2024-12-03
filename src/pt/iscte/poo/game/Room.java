@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import objects.Manel;
+import objects.Princess;
 import objects.Stair;
 import objects.Sword;
 import objects.Trap;
@@ -40,7 +41,7 @@ public class Room {
 
 	}
 
-	public int moveManel(Direction dir, boolean gravity) {
+	public Actions moveManel(Direction dir, boolean gravity) {
 		return manel.move(dir, this, gravity);
 	}
 
@@ -86,6 +87,9 @@ public class Room {
 						donkeyKongs.add(donkeyKong);
 						ImageGUI.getInstance().addImage(donkeyKong);
 						break;
+					case 'P': // Princess
+						levelElements.add(new Princess(x, y));
+						break;
 
 						
 					}
@@ -110,6 +114,11 @@ public class Room {
 	public boolean isTrap(Point2D position) {
 		return levelElements.stream().anyMatch(el -> el.getPosition().equals(position) && el instanceof Trap);
 	}
+	
+	public boolean isPrincess(Point2D position) {
+		return levelElements.stream().anyMatch(el -> el.getPosition().equals(position) && el instanceof Princess);
+	}
+	
 
 	public boolean isNextRoomTile(Point2D position) {
 		return levelElements.stream().anyMatch(el -> el.getPosition().equals(position) && el instanceof Door);

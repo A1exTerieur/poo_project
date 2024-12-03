@@ -1,5 +1,6 @@
 package objects;
 
+import pt.iscte.poo.game.Actions;
 import pt.iscte.poo.game.Room;
 import pt.iscte.poo.gui.ImageTile;
 import pt.iscte.poo.utils.Direction;
@@ -30,35 +31,33 @@ public class Manel implements ImageTile {
 		return 2;
 	}
 
-	public int move(Direction dir, Room room, boolean gravity) {
+	public Actions move(Direction dir, Room room, boolean gravity) {
         Point2D targetPosition = this.position.plus(dir.asVector());
         
-        
-
         if (room.isWall(targetPosition) || targetPosition.getX() < 0 || targetPosition.getX() > 9 ) {
-            System.out.println("Blocked by a wall!");
-            return -1;
+            return Actions.BLOCKED;
         }
 
         if (dir == Direction.UP || dir == Direction.DOWN) {
             if (!gravity && !room.isStair(targetPosition) && !room.isStair(position)) {
-                System.out.println("Cannot move vertically without stairs!");
-                return -1;
+                return Actions.BLOCKED;
             }
         }
         
 
         if (room.isNextRoomTile(targetPosition)) {
-            System.out.println("Moving to the next room!");
-            return 2;
+            return Actions.DOOR;
+        }
+        
+        if (room.isPrincess(targetPosition)) {
+            return Actions.PRINCESS;
         }
         
         
 
         this.position = targetPosition;
-        System.out.println("Moved to " + targetPosition);
         useItemAtPosition(targetPosition, room);
-        return 1;
+        return Actions.OK;
     }
 	
 	public int getLife() {
@@ -75,6 +74,9 @@ public class Manel implements ImageTile {
 	
 	public void removeLife(int damage) {
 		life-=damage;
+		if(life < 0) {
+			life = 0;
+		}
 	}
 	
 	public void addLife(int hp) {

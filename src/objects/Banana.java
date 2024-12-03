@@ -17,7 +17,7 @@ public class Banana implements ImageTile {
 
 	@Override
 	public String getName() {
-		return "Hammer";
+		return "Banana";
 	}
 
 	@Override

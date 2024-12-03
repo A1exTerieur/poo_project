@@ -14,7 +14,7 @@ public class DonkeyKong implements ImageTile {
 
 	private int life = 100;
 	private Point2D position;
-	private final int damage = 20;
+	private final int damage = 10;
 	private Random rand = new Random();
 	private List<Banana> bananas = new ArrayList<>();
 
@@ -45,7 +45,6 @@ public class DonkeyKong implements ImageTile {
 	public void moveRandom() {
 		int deltaX = rand.nextBoolean() ? 1 : -1;
 		Vector2D movement = new Vector2D(deltaX, 0);
-		System.out.println(position.getX());
 		if (position.getX() + movement.getX() > 0 && position.getX() + movement.getX()< 10) {
 			position = position.plus(movement);
 		}
