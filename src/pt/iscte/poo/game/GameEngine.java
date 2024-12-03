@@ -1,5 +1,7 @@
 package pt.iscte.poo.game;
 
+import java.awt.event.KeyEvent;
+
 import objects.Banana;
 import objects.DonkeyKong;
 import objects.Manel;
@@ -13,6 +15,7 @@ public class GameEngine implements Observer {
 	private Manel manel;
 	private Room currentRoom;
 	private int lastTickProcessed = 0;
+	private boolean haveTheBomb = false;
 	
 	public GameEngine() {
 		this.manel = new Manel(new Point2D(0,0));
@@ -26,10 +29,17 @@ public class GameEngine implements Observer {
 		if (ImageGUI.getInstance().wasKeyPressed()) {
 			int k = ImageGUI.getInstance().keyPressed();
 			System.out.println("Keypressed " + k);
+			haveTheBomb = currentRoom.getManel().isHaveTheBomb();
+			System.out.println("haveTheBomb = "+haveTheBomb);
+			if(haveTheBomb && k == KeyEvent.VK_B) {
+		    	currentRoom.getManel().useBomb();
+		    	currentRoom.spawnBomb(currentRoom.getManel().getBomb());
+		    }
 			if (Direction.isDirection(k) && !stuckByDk()) {
 			    System.out.println("Direction! ");
 			    int nextRoomTriggered = currentRoom.moveManel(Direction.directionFor(k), false);
 			    hitByBanana();
+			    
 			    if(nextRoomTriggered == 2) {
 			    	loadRoom(currentRoom.getNextRoomFile());
 			    }
@@ -59,6 +69,8 @@ public class GameEngine implements Observer {
 			this.manel = new Manel(new Point2D(0,0));
 		}
 	}
+	
+	
 	
 	private boolean stuckByDk() {
 		for(DonkeyKong dk: currentRoom.getDonkeyKongs()) {

@@ -11,6 +11,7 @@ import objects.Stair;
 import objects.Sword;
 import objects.Trap;
 import objects.Wall;
+import objects.Bomb;
 import objects.Consumable;
 import objects.DonkeyKong;
 import objects.Door;
@@ -62,6 +63,9 @@ public class Room {
 					switch (c) {
 					case 'W': // Mur
 						levelElements.add(new Wall(x, y));
+						break;
+					case 'B': // Bombe
+						levelConsumables.add(new Bomb(new Point2D(x, y)));
 						break;
 					case 'H': // Position du héros
 						heroStartingPosition = new Point2D(x, y);
@@ -145,5 +149,9 @@ public class Room {
 	public void removeItem(Consumable item) {
 		levelConsumables.remove(item);
 		ImageGUI.getInstance().removeImage(item);
+	}
+	
+	public void spawnBomb(Bomb bomb) {
+		ImageGUI.getInstance().addImage(bomb);
 	}
 }

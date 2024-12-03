@@ -1,6 +1,9 @@
 package objects;
 
+import java.awt.event.KeyEvent;
+
 import pt.iscte.poo.game.Room;
+import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.gui.ImageTile;
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
@@ -10,6 +13,8 @@ public class Manel implements ImageTile {
 	private int life = 100;
 	private Point2D position;
 	private int damage = 15;
+	private boolean haveTheBomb = false;
+	private Bomb bomb = null;
 	
 	public Manel(Point2D initialPosition){
 		position = initialPosition;
@@ -69,10 +74,27 @@ public class Manel implements ImageTile {
 		return damage;
 	}
 	
+	public Bomb getBomb() {
+		return bomb;
+	}
+	
 	public void increaseDamage(int point) {
 		damage+=point;
 	}
 	
+	public void takeBomb(Bomb bomb) {
+		haveTheBomb = true;
+		this.bomb = bomb;
+	}
+	
+	public void useBomb() {
+		bomb.explode(position);
+	}
+	
+	public boolean isHaveTheBomb() {
+		return haveTheBomb;
+	}
+
 	public void removeLife(int damage) {
 		life-=damage;
 	}
