@@ -145,6 +145,30 @@ public class Room {
 	public List<Consumable> getLevelConsumables() {
 		return levelConsumables;
 	}
+	
+	public void checkBombCollisions() {
+		
+	        	System.out.println("DEBUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUG");
+	            Bomb bomb = manel.getBomb();
+
+	            // Vérifier collision avec Manel
+	            if (bomb.getPosition().equals(manel.getPosition())) {
+	            	System.out.println("Collision avec Manel");
+	                bomb.explode(this);
+	                return;
+	            }
+
+	            // Vérifier collision avec Donkey Kong
+	            for (DonkeyKong dk : donkeyKongs) {
+	                if (dk.getPosition().equals(bomb.getPosition())) {
+	                    bomb.explode(this);
+	                    break;
+	                }
+	            }
+	        
+	    
+	}
+
 
 	public void removeItem(Consumable item) {
 		levelConsumables.remove(item);
@@ -152,6 +176,7 @@ public class Room {
 	}
 	
 	public void spawnBomb(Bomb bomb) {
+		levelConsumables.add(bomb);
 		ImageGUI.getInstance().addImage(bomb);
 	}
 }

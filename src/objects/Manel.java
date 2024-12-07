@@ -41,7 +41,7 @@ public class Manel implements ImageTile {
         
 
         if (room.isWall(targetPosition) || targetPosition.getX() < 0 || targetPosition.getX() > 9 ) {
-            System.out.println("Blocked by a wall!");
+            //System.out.println("Blocked by a wall!");
             return -1;
         }
 
@@ -61,7 +61,7 @@ public class Manel implements ImageTile {
         
 
         this.position = targetPosition;
-        System.out.println("Moved to " + targetPosition);
+        //System.out.println("Moved to " + targetPosition);
         useItemAtPosition(targetPosition, room);
         return 1;
     }
@@ -87,8 +87,13 @@ public class Manel implements ImageTile {
 		this.bomb = bomb;
 	}
 	
-	public void useBomb() {
-		bomb.explode(position);
+	public void useBomb(int k) {
+		if(k == KeyEvent.VK_B) {
+			bomb.dropTheBomb(new Point2D(position.getX() - 1, position.getY()));
+		} else {
+			bomb.dropTheBomb(new Point2D(position.getX() + 1, position.getY()));
+		}
+		haveTheBomb = false;
 	}
 	
 	public boolean isHaveTheBomb() {

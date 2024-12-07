@@ -1,8 +1,11 @@
 package pt.iscte.poo.game;
 
 import java.awt.event.KeyEvent;
+import java.util.Iterator;
 
 import objects.Banana;
+import objects.Bomb;
+import objects.Consumable;
 import objects.DonkeyKong;
 import objects.Manel;
 import pt.iscte.poo.gui.ImageGUI;
@@ -16,6 +19,8 @@ public class GameEngine implements Observer {
 	private Room currentRoom;
 	private int lastTickProcessed = 0;
 	private boolean haveTheBomb = false;
+	private boolean bombDrop = false;
+	private int tickBombDrop = 0;
 	
 	public GameEngine() {
 		this.manel = new Manel(new Point2D(0,0));
@@ -28,15 +33,14 @@ public class GameEngine implements Observer {
 		
 		if (ImageGUI.getInstance().wasKeyPressed()) {
 			int k = ImageGUI.getInstance().keyPressed();
-			System.out.println("Keypressed " + k);
 			haveTheBomb = currentRoom.getManel().isHaveTheBomb();
-			System.out.println("haveTheBomb = "+haveTheBomb);
-			if(haveTheBomb && k == KeyEvent.VK_B) {
-		    	currentRoom.getManel().useBomb();
+			if(haveTheBomb && (k == KeyEvent.VK_B || k == KeyEvent.VK_N)) {
+				bombDrop = true;
+				tickBombDrop = lastTickProcessed;
+		    	currentRoom.getManel().useBomb(k);
 		    	currentRoom.spawnBomb(currentRoom.getManel().getBomb());
 		    }
 			if (Direction.isDirection(k) && !stuckByDk()) {
-			    System.out.println("Direction! ");
 			    int nextRoomTriggered = currentRoom.moveManel(Direction.directionFor(k), false);
 			    hitByBanana();
 			    
@@ -54,7 +58,23 @@ public class GameEngine implements Observer {
 	}
 
 	private void processTick() {
-		System.out.println("Tic Tac : " + lastTickProcessed);
+		System.out.println("tick = "+lastTickProcessed);
+		
+		if(bombDrop && !manel.getBomb().hasExploded()) {
+			// Vérifier les collisions avec les bombes
+			currentRoom.checkBombCollisions();
+			
+			if(lastTickProcessed < tickBombDrop + 5) {
+				currentRoom.getManel().getBomb().tick(currentRoom);
+			}
+			
+			if(lastTickProcessed == tickBombDrop + 4) {
+				System.out.println("Bombdrop false");
+				bombDrop = false;
+			}
+		    
+		}
+	    
 		hitByBanana();
 		checkManelLife();
 		applyGravity();
