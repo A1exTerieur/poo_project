@@ -53,10 +53,19 @@ public class Manel implements ImageTile {
         }
         
 
-        if (room.isNextRoomTile(targetPosition)) {
-            System.out.println("Moving to the next room!");
-            return 2;
+        if (room.isFakeWall(targetPosition)) {
+            System.out.println("Stepped on a FakeWall! It turned into a trap!");
+
+            // Transformer le FakeWall en Trap
+            room.transformFakeWallToTrap(targetPosition);
+
+            // Infliger des dégâts au héros
+            this.removeLife(20); // Exemple : -20 points de vie
+            System.out.println("Manel took damage! Life: " + this.life);
+
+            return -1; // Le mouvement s'arrête ici
         }
+
         
         
 

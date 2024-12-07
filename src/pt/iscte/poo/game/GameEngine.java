@@ -58,7 +58,7 @@ public class GameEngine implements Observer {
 	}
 
 	private void processTick() {
-		System.out.println("tick = "+lastTickProcessed);
+		//System.out.println("tick = "+lastTickProcessed);
 		
 		if(bombDrop && !manel.getBomb().hasExploded()) {
 			// Vérifier les collisions avec les bombes
@@ -100,7 +100,6 @@ public class GameEngine implements Observer {
 				if(dk.getLife() <= 0) {
 					currentRoom.dkRemove(dk);
 				}
-				System.out.println("Current life : "+currentRoom.getManel().getLife());
 				return true;
 			}
 		}
