@@ -12,9 +12,11 @@ import objects.Stair;
 import objects.Sword;
 import objects.Trap;
 import objects.Wall;
+import objects.Bomb;
 import objects.Consumable;
 import objects.DonkeyKong;
 import objects.Door;
+import objects.FakeWall;
 import objects.Floor;
 import objects.GoodMeat;
 import objects.LevelElement;
@@ -26,12 +28,11 @@ public class Room {
 
 	private List<LevelElement> levelElements = new ArrayList<>();
 	private List<DonkeyKong> donkeyKongs = new ArrayList<>();
-	private List<Consumable> levelConsumables= new ArrayList<>();
+	private List<Consumable> levelConsumables = new ArrayList<>();
 
 	private Point2D heroStartingPosition = new Point2D(1, 1);
 	private Manel manel;
 	private String nextRoomFile;
-
 
 	public Room(String roomFile, Manel manel) {
 		loadRoom(roomFile);
@@ -64,6 +65,12 @@ public class Room {
 					case 'W': // Mur
 						levelElements.add(new Wall(x, y));
 						break;
+					case 'F': // FakeWall
+						levelElements.add(new FakeWall(x, y));
+						break;
+					case 'B': // Bombe
+						levelConsumables.add(new Bomb(new Point2D(x, y)));
+						break;
 					case 'H': // Position du héros
 						heroStartingPosition = new Point2D(x, y);
 						break;
@@ -91,10 +98,9 @@ public class Room {
 						levelElements.add(new Princess(x, y));
 						break;
 
-						
 					}
 					new Floor(x, y);
-					
+
 				}
 				y++;
 			}
@@ -105,6 +111,10 @@ public class Room {
 
 	public boolean isWall(Point2D position) {
 		return levelElements.stream().anyMatch(el -> el.getPosition().equals(position) && el instanceof Wall);
+	}
+	
+	public boolean isFakeWall(Point2D position) {
+		return levelElements.stream().anyMatch(el -> el.getPosition().equals(position) && el instanceof FakeWall);
 	}
 
 	public boolean isStair(Point2D position) {
@@ -132,6 +142,20 @@ public class Room {
 		return manel;
 	}
 	
+	public void transformFakeWallToTrap(Point2D position) {
+	    for (int i = 0; i < levelElements.size(); i++) {
+	        LevelElement element = levelElements.get(i);
+	        if (element.getPosition().equals(position) && element instanceof FakeWall) {
+	            // Remplace FakeWall par un Trap
+	            levelElements.set(i, new Trap(position.getX(), position.getY()));
+	            ImageGUI.getInstance().removeImage(element); // Supprimer l'image du FakeWall
+	            ImageGUI.getInstance().addImage(new Trap(position.getX(), position.getY())); // Ajouter l'image du Trap
+	            break;
+	        }
+	    }
+	}
+
+
 	public Point2D getHeroStartingPosition() {
 		return heroStartingPosition;
 	}
@@ -144,15 +168,42 @@ public class Room {
 		donkeyKongs.remove(dk);
 		dk.clearBananas();
 		ImageGUI.getInstance().removeImage(dk);
-		
+
 	}
 
 	public List<Consumable> getLevelConsumables() {
 		return levelConsumables;
 	}
 
+	public void checkBombCollisions() {
+
+		System.out.println("DEBUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUG");
+		Bomb bomb = manel.getBomb();
+
+		// Vérifier collision avec Manel
+		if (bomb.getPosition().equals(manel.getPosition())) {
+			System.out.println("Collision avec Manel");
+			bomb.explode(this);
+			return;
+		}
+
+		// Vérifier collision avec Donkey Kong
+		for (DonkeyKong dk : donkeyKongs) {
+			if (dk.getPosition().equals(bomb.getPosition())) {
+				bomb.explode(this);
+				break;
+			}
+		}
+
+	}
+
 	public void removeItem(Consumable item) {
 		levelConsumables.remove(item);
 		ImageGUI.getInstance().removeImage(item);
+	}
+
+	public void spawnBomb(Bomb bomb) {
+		levelConsumables.add(bomb);
+		ImageGUI.getInstance().addImage(bomb);
 	}
 }

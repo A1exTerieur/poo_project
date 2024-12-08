@@ -1,6 +1,11 @@
 package pt.iscte.poo.game;
 
+import java.awt.event.KeyEvent;
+import java.util.Iterator;
+
 import objects.Banana;
+import objects.Bomb;
+import objects.Consumable;
 import objects.DonkeyKong;
 import objects.Manel;
 import objects.Skeleton;
@@ -97,6 +102,8 @@ public class GameEngine implements Observer {
 			}
 		}
 	}
+	
+	
 	
 	private boolean stuckByDk() {
 		for(DonkeyKong dk: currentRoom.getDonkeyKongs()) {

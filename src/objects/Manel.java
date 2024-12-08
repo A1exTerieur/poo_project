@@ -1,7 +1,9 @@
 package objects;
 
-import pt.iscte.poo.game.Actions;
+import java.awt.event.KeyEvent;
+
 import pt.iscte.poo.game.Room;
+import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.gui.ImageTile;
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
@@ -11,6 +13,8 @@ public class Manel implements ImageTile {
 	private int life = 100;
 	private Point2D position;
 	private int damage = 15;
+	private boolean haveTheBomb = false;
+	private Bomb bomb = null;
 	
 	public Manel(Point2D initialPosition){
 		position = initialPosition;
@@ -31,33 +35,44 @@ public class Manel implements ImageTile {
 		return 2;
 	}
 
-	public Actions move(Direction dir, Room room, boolean gravity) {
+	public int move(Direction dir, Room room, boolean gravity) {
         Point2D targetPosition = this.position.plus(dir.asVector());
         
+        
+
         if (room.isWall(targetPosition) || targetPosition.getX() < 0 || targetPosition.getX() > 9 ) {
-            return Actions.BLOCKED;
+            //System.out.println("Blocked by a wall!");
+            return -1;
         }
 
         if (dir == Direction.UP || dir == Direction.DOWN) {
             if (!gravity && !room.isStair(targetPosition) && !room.isStair(position)) {
-                return Actions.BLOCKED;
+                System.out.println("Cannot move vertically without stairs!");
+                return -1;
             }
         }
         
 
-        if (room.isNextRoomTile(targetPosition)) {
-            return Actions.DOOR;
+        if (room.isFakeWall(targetPosition)) {
+            System.out.println("Stepped on a FakeWall! It turned into a trap!");
+
+            // Transformer le FakeWall en Trap
+            room.transformFakeWallToTrap(targetPosition);
+
+            // Infliger des dégâts au héros
+            this.removeLife(20); // Exemple : -20 points de vie
+            System.out.println("Manel took damage! Life: " + this.life);
+
+            return -1; // Le mouvement s'arrête ici
         }
-        
-        if (room.isPrincess(targetPosition)) {
-            return Actions.PRINCESS;
-        }
+
         
         
 
         this.position = targetPosition;
+        //System.out.println("Moved to " + targetPosition);
         useItemAtPosition(targetPosition, room);
-        return Actions.OK;
+        return 1;
     }
 	
 	public int getLife() {
@@ -68,15 +83,34 @@ public class Manel implements ImageTile {
 		return damage;
 	}
 	
+	public Bomb getBomb() {
+		return bomb;
+	}
+	
 	public void increaseDamage(int point) {
 		damage+=point;
 	}
 	
+	public void takeBomb(Bomb bomb) {
+		haveTheBomb = true;
+		this.bomb = bomb;
+	}
+	
+	public void useBomb(int k) {
+		if(k == KeyEvent.VK_B) {
+			bomb.dropTheBomb(new Point2D(position.getX() - 1, position.getY()));
+		} else {
+			bomb.dropTheBomb(new Point2D(position.getX() + 1, position.getY()));
+		}
+		haveTheBomb = false;
+	}
+	
+	public boolean isHaveTheBomb() {
+		return haveTheBomb;
+	}
+
 	public void removeLife(int damage) {
 		life-=damage;
-		if(life < 0) {
-			life = 0;
-		}
 	}
 	
 	public void addLife(int hp) {
