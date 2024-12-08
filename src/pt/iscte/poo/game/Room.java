@@ -133,6 +133,15 @@ public class Room {
 	public boolean isNextRoomTile(Point2D position) {
 		return levelElements.stream().anyMatch(el -> el.getPosition().equals(position) && el instanceof Door);
 	}
+	
+	public List<Bomb> getDroppedBombs() {
+	
+	    return levelConsumables.stream()
+	                           .filter(Bomb.class::isInstance)
+	                           .map(Bomb.class::cast)
+	                           .filter(bomb -> !bomb.isEnd() && bomb.isDropped())
+	                           .toList();
+	}
 
 	public String getNextRoomFile() {
 		return nextRoomFile;

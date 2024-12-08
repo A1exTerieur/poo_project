@@ -2,6 +2,7 @@ package objects;
 
 import java.awt.event.KeyEvent;
 
+import pt.iscte.poo.game.Actions;
 import pt.iscte.poo.game.Room;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.gui.ImageTile;
@@ -34,45 +35,36 @@ public class Manel implements ImageTile {
 	public int getLayer() {
 		return 2;
 	}
-
-	public int move(Direction dir, Room room, boolean gravity) {
+	public Actions move(Direction dir, Room room, boolean gravity) {
         Point2D targetPosition = this.position.plus(dir.asVector());
         
         
 
         if (room.isWall(targetPosition) || targetPosition.getX() < 0 || targetPosition.getX() > 9 ) {
-            //System.out.println("Blocked by a wall!");
-            return -1;
+            return Actions.BLOCKED;
         }
 
         if (dir == Direction.UP || dir == Direction.DOWN) {
             if (!gravity && !room.isStair(targetPosition) && !room.isStair(position)) {
-                System.out.println("Cannot move vertically without stairs!");
-                return -1;
+                return Actions.BLOCKED;
             }
         }
         
 
-        if (room.isFakeWall(targetPosition)) {
-            System.out.println("Stepped on a FakeWall! It turned into a trap!");
-
-            // Transformer le FakeWall en Trap
-            room.transformFakeWallToTrap(targetPosition);
-
-            // Infliger des dégâts au héros
-            this.removeLife(20); // Exemple : -20 points de vie
-            System.out.println("Manel took damage! Life: " + this.life);
-
-            return -1; // Le mouvement s'arrête ici
+        if (room.isNextRoomTile(targetPosition)) {
+            System.out.println("Moving to the next room!");
+            return Actions.DOOR;
         }
-
+        
+        if (room.isPrincess(targetPosition)) {
+            return Actions.PRINCESS;
+        }
         
         
 
         this.position = targetPosition;
-        //System.out.println("Moved to " + targetPosition);
         useItemAtPosition(targetPosition, room);
-        return 1;
+        return Actions.OK;
     }
 	
 	public int getLife() {

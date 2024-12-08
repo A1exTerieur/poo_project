@@ -47,9 +47,13 @@ public class GameEngine implements Observer {
 			    }
 			    
 			    hitByBanana();
-			    
-			    
+			        
 			}
+			if( currentRoom.getManel().isHaveTheBomb() && (k == KeyEvent.VK_B || k == KeyEvent.VK_N)) {
+		    	currentRoom.getManel().useBomb(k);
+		    	currentRoom.spawnBomb(currentRoom.getManel().getBomb());
+		    }
+			
 		}
 		int t = ImageGUI.getInstance().getTicks();
 		while (lastTickProcessed < t) {
@@ -68,12 +72,13 @@ public class GameEngine implements Observer {
 	}
 
 	private void processTick() {
-		System.out.println("Tic Tac : " + lastTickProcessed);
+		//System.out.println("Tic Tac : " + lastTickProcessed);
 		checkManelLife();
 		applyGravity();
 		moveDonkeyKongs(); 
 		checkTrap();
 		hitByBanana();
+		processBomb();
 
 		lastTickProcessed++;
 	}
@@ -158,6 +163,12 @@ public class GameEngine implements Observer {
 	private void closeGame() {
 	    ImageGUI.getInstance().dispose();
 	}
+	
+	private void processBomb() {
+		for(Bomb bomb : currentRoom.getDroppedBombs()) {
+			bomb.tick(currentRoom);
+		}
+	};
 
 
 }
