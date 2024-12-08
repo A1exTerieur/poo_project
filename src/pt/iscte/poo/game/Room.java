@@ -12,6 +12,7 @@ import objects.Stair;
 import objects.Sword;
 import objects.Trap;
 import objects.Wall;
+import objects.BadMeat;
 import objects.Bomb;
 import objects.Consumable;
 import objects.DonkeyKong;
@@ -142,6 +143,14 @@ public class Room {
 	                           .filter(bomb -> !bomb.isEnd() && bomb.isDropped())
 	                           .toList();
 	}
+	
+	public List<GoodMeat> getGoodMeat() {
+		
+	    return levelConsumables.stream()
+	                           .filter(GoodMeat.class::isInstance)
+	                           .map(GoodMeat.class::cast)
+	                           .toList();
+	}
 
 	public String getNextRoomFile() {
 		return nextRoomFile;
@@ -150,6 +159,25 @@ public class Room {
 	public Manel getManel() {
 		return manel;
 	}
+	
+	public void transformGoodMeatToBadMeat(Point2D position) {
+	    for (int i = 0; i < levelConsumables.size(); i++) {
+	        Consumable element = levelConsumables.get(i);
+	        if (element.getPosition().equals(position) && element instanceof GoodMeat) {
+	            // Supprimer l'image de GoodMeat
+	            ImageGUI.getInstance().removeImage(element);
+
+	            // Remplacer GoodMeat par BadMeat
+	            BadMeat badMeat = new BadMeat(position);
+	            levelConsumables.set(i, badMeat);
+	            
+	            // Ajouter l'image de BadMeat
+	            ImageGUI.getInstance().addImage(badMeat);
+	            break;
+	        }
+	    }
+	}
+
 	
 	public void transformFakeWallToTrap(Point2D position) {
 	    for (int i = 0; i < levelElements.size(); i++) {
@@ -186,7 +214,7 @@ public class Room {
 
 	public void checkBombCollisions() {
 
-		System.out.println("DEBUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUG");
+		//System.out.println("DEBUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUG");
 		Bomb bomb = manel.getBomb();
 
 		// Vérifier collision avec Manel
@@ -214,5 +242,10 @@ public class Room {
 	public void spawnBomb(Bomb bomb) {
 		levelConsumables.add(bomb);
 		ImageGUI.getInstance().addImage(bomb);
+	}
+	
+	public void spawnManel(Manel manel) {
+		this.manel = manel;
+		ImageGUI.getInstance().addImage(manel);
 	}
 }

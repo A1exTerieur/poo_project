@@ -7,6 +7,7 @@ import objects.Banana;
 import objects.Bomb;
 import objects.Consumable;
 import objects.DonkeyKong;
+import objects.GoodMeat;
 import objects.Manel;
 import objects.Skeleton;
 import pt.iscte.poo.gui.ImageGUI;
@@ -79,7 +80,8 @@ public class GameEngine implements Observer {
 		checkTrap();
 		hitByBanana();
 		processBomb();
-
+		processGoodMeat();
+		checkManelGameLife();
 		lastTickProcessed++;
 	}
 	
@@ -91,9 +93,8 @@ public class GameEngine implements Observer {
 
 	private void checkManelLife() {
 		if(manel.getLife() <= 0 && timer == DIED_TIMER) {
+			manel.removeGameLife(1);
 			ImageGUI.getInstance().removeImage(manel);
-			
-			
 			ImageGUI.getInstance().addImage(new Skeleton(manel.getPosition()));
 			
 			timer --;
@@ -102,13 +103,22 @@ public class GameEngine implements Observer {
 			timer --;
 			if(timer ==0) {
 				timer = DIED_TIMER;
-				manel = new Manel(new Point2D(0,0));
-				loadRoom("room0.txt");
+				manel.setPosition(currentRoom.getHeroStartingPosition());
+				manel.setMaxLife();
+				currentRoom.spawnManel(manel);
+				//loadRoom("room0.txt");
 			}
 		}
+		
 	}
 	
-	
+	private void checkManelGameLife() {
+		if(manel.getGameLife() == 0) {
+			manel = new Manel(currentRoom.getHeroStartingPosition());
+			loadRoom("room0.txt");
+		}
+		
+	}
 	
 	private boolean stuckByDk() {
 		for(DonkeyKong dk: currentRoom.getDonkeyKongs()) {
@@ -163,6 +173,12 @@ public class GameEngine implements Observer {
 	private void closeGame() {
 	    ImageGUI.getInstance().dispose();
 	}
+	
+	private void processGoodMeat() {
+		for(GoodMeat meat : currentRoom.getGoodMeat()) {
+			meat.tick(currentRoom);
+		}
+	};
 	
 	private void processBomb() {
 		for(Bomb bomb : currentRoom.getDroppedBombs()) {

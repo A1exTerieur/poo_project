@@ -88,7 +88,7 @@ public class Bomb extends Consumable{
 
 	            // Damage Manel if in the blast radius
 	            if (room.getManel().getPosition().equals(target)) {
-	                room.getManel().removeLife(33);
+	                room.getManel().removeGameLife(1);
 	            }
 
 	            // Add Fire at the target position

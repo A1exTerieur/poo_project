@@ -12,6 +12,7 @@ import pt.iscte.poo.utils.Point2D;
 public class Manel implements ImageTile {
 	
 	private int life = 100;
+	private int gameLife = 3;
 	private Point2D position;
 	private int damage = 15;
 	private boolean haveTheBomb = false;
@@ -29,6 +30,10 @@ public class Manel implements ImageTile {
 	@Override
 	public Point2D getPosition() {
 		return position;
+	}
+	
+	public void setMaxLife() {
+		life = 100;
 	}
 
 	@Override
@@ -48,6 +53,11 @@ public class Manel implements ImageTile {
             if (!gravity && !room.isStair(targetPosition) && !room.isStair(position)) {
                 return Actions.BLOCKED;
             }
+        }
+        
+        if(room.isFakeWall(targetPosition)) {
+        	room.transformFakeWallToTrap(targetPosition);
+        	return Actions.TRAP;
         }
         
 
@@ -71,12 +81,20 @@ public class Manel implements ImageTile {
 		return life;
 	}
 	
+	public int getGameLife() {
+		return gameLife;
+	}
+	
 	public int getDamage() {
 		return damage;
 	}
 	
 	public Bomb getBomb() {
 		return bomb;
+	}
+	
+	public void removeGameLife(int num) {
+		gameLife-=num;
 	}
 	
 	public void increaseDamage(int point) {
