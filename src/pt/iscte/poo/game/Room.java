@@ -13,6 +13,7 @@ import objects.Sword;
 import objects.Trap;
 import objects.Wall;
 import objects.BadMeat;
+import objects.Bat;
 import objects.Bomb;
 import objects.Consumable;
 import objects.DonkeyKong;
@@ -29,6 +30,7 @@ public class Room {
 
 	private List<LevelElement> levelElements = new ArrayList<>();
 	private List<DonkeyKong> donkeyKongs = new ArrayList<>();
+	private List<Bat> bats = new ArrayList<>();
 	private List<Consumable> levelConsumables = new ArrayList<>();
 
 	private Point2D heroStartingPosition = new Point2D(1, 1);
@@ -71,6 +73,11 @@ public class Room {
 						break;
 					case 'B': // Bombe
 						levelConsumables.add(new Bomb(new Point2D(x, y)));
+						break;
+					case 'b': // Bat
+						Bat bat = new Bat(new Point2D(x, y));
+						bats.add(bat);
+						ImageGUI.getInstance().addImage(bat);
 						break;
 					case 'H': // Position du héros
 						heroStartingPosition = new Point2D(x, y);
@@ -200,7 +207,11 @@ public class Room {
 	public List<DonkeyKong> getDonkeyKongs() {
 		return donkeyKongs;
 	}
-
+	
+	public List<Bat> getBats(){
+		return bats;
+	}
+	
 	public void dkRemove(DonkeyKong dk) {
 		donkeyKongs.remove(dk);
 		dk.clearBananas();

@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent;
 import java.util.Iterator;
 
 import objects.Banana;
+import objects.Bat;
 import objects.Bomb;
 import objects.Consumable;
 import objects.DonkeyKong;
@@ -77,6 +78,7 @@ public class GameEngine implements Observer {
 		checkManelLife();
 		applyGravity();
 		moveDonkeyKongs(); 
+		moveBats();
 		checkTrap();
 		hitByBanana();
 		processBomb();
@@ -168,6 +170,12 @@ public class GameEngine implements Observer {
 		}
 		
 		ImageGUI.getInstance().update();
+	}
+	
+	private void moveBats() {
+		for(Bat bat : currentRoom.getBats()) {
+			bat.moveRandom(currentRoom);
+		}
 	}
 	
 	private void closeGame() {
