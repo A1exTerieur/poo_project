@@ -61,7 +61,7 @@ public class GameEngine implements Observer {
 		while (lastTickProcessed < t) {
 			processTick();
 		}
-		
+		checkCollisionBats();
 		StringBuilder msg = new StringBuilder();
 		msg.append("Life : "+ manel.getLife()+ " | Damage : "+manel.getDamage());
 		for(DonkeyKong dk: currentRoom.getDonkeyKongs()) {
@@ -75,6 +75,7 @@ public class GameEngine implements Observer {
 
 	private void processTick() {
 		//System.out.println("Tic Tac : " + lastTickProcessed);
+		checkCollisionBats();
 		checkManelLife();
 		applyGravity();
 		moveDonkeyKongs(); 
@@ -121,6 +122,20 @@ public class GameEngine implements Observer {
 		}
 		
 	}
+	
+	private void checkCollisionBats() {
+	    Iterator<Bat> iterator = currentRoom.getBats().iterator();
+
+	    while (iterator.hasNext()) {
+	        Bat bat = iterator.next();
+	        if (bat.getPosition().equals(manel.getPosition())) {
+	            manel.removeLife(bat.getDamage());
+	            iterator.remove(); // Suppression sécurisée via l'iterator
+	            currentRoom.removeBat(bat);
+	        }
+	    }
+	}
+
 	
 	private boolean stuckByDk() {
 		for(DonkeyKong dk: currentRoom.getDonkeyKongs()) {
@@ -176,6 +191,7 @@ public class GameEngine implements Observer {
 		for(Bat bat : currentRoom.getBats()) {
 			bat.moveRandom(currentRoom);
 		}
+		ImageGUI.getInstance().update();
 	}
 	
 	private void closeGame() {

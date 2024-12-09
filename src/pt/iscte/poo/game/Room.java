@@ -218,6 +218,11 @@ public class Room {
 		ImageGUI.getInstance().removeImage(dk);
 
 	}
+	
+	public void removeBat(Bat bat) {
+		bats.remove(bat);
+		ImageGUI.getInstance().removeImage(bat);
+	}
 
 	public List<Consumable> getLevelConsumables() {
 		return levelConsumables;
@@ -244,6 +249,8 @@ public class Room {
 		}
 
 	}
+	
+	
 
 	public void removeItem(Consumable item) {
 		levelConsumables.remove(item);

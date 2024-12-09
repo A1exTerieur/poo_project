@@ -30,7 +30,11 @@ public class Bat implements ImageTile{
 
 	@Override
 	public int getLayer() {
-		return 1;
+		return 2;
+	}
+	
+	public int getDamage() {
+		return 20;
 	}
 	
 	public void moveRandom(Room room) {
