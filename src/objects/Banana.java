@@ -5,14 +5,11 @@ import pt.iscte.poo.gui.ImageTile;
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
 
-public class Banana implements ImageTile {
-
-    private Point2D position;
+public class Banana extends Projectile {
 
 	
 	public Banana(Point2D position) {
-		 this.position = position;
-		 ImageGUI.getInstance().addImage(this);
+		super(position);
 	}
 
 	@Override

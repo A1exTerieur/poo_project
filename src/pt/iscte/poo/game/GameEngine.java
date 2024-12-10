@@ -8,8 +8,10 @@ import objects.Bat;
 import objects.Bomb;
 import objects.Consumable;
 import objects.DonkeyKong;
+import objects.Fireball;
 import objects.GoodMeat;
 import objects.Manel;
+import objects.Projectile;
 import objects.Skeleton;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.observer.Observed;
@@ -55,6 +57,9 @@ public class GameEngine implements Observer {
 		    	currentRoom.getManel().useBomb(k);
 		    	currentRoom.spawnBomb(currentRoom.getManel().getBomb());
 		    }
+			if(k == KeyEvent.VK_H || k == KeyEvent.VK_F) {
+				currentRoom.getManel().shoot(k);
+			}
 			
 		}
 		int t = ImageGUI.getInstance().getTicks();
@@ -62,6 +67,8 @@ public class GameEngine implements Observer {
 			processTick();
 		}
 		checkCollisionBats();
+		checkCollisionsProjectile();
+		checkDkLife();
 		StringBuilder msg = new StringBuilder();
 		msg.append("Life : "+ manel.getLife()+ " | Damage : "+manel.getDamage());
 		for(DonkeyKong dk: currentRoom.getDonkeyKongs()) {
@@ -81,6 +88,7 @@ public class GameEngine implements Observer {
 		moveDonkeyKongs(); 
 		moveBats();
 		checkTrap();
+		processProjectile();
 		hitByBanana();
 		processBomb();
 		processGoodMeat();
@@ -135,16 +143,36 @@ public class GameEngine implements Observer {
 	        }
 	    }
 	}
-
+	
+	private void checkDkLife() {
+		Iterator<DonkeyKong> iterator = currentRoom.getDonkeyKongs().iterator();
+		while (iterator.hasNext()) {
+			DonkeyKong dk = iterator.next();
+	        if (dk.getLife() <= 0) {
+	            iterator.remove(); // Suppression sécurisée via l'iterator
+	            currentRoom.dkRemove(dk);
+	        }
+	    }
+	}
+	
+	private void checkCollisionsProjectile() {
+		for(Projectile proj : currentRoom.getManel().getProjectiles()) {
+			for(DonkeyKong dk: currentRoom.getDonkeyKongs()) {
+				if (proj.getPosition().equals(dk.getPosition())) {
+					dk.removeLife(30);
+		        }
+			}
+		}
+	}
 	
 	private boolean stuckByDk() {
 		for(DonkeyKong dk: currentRoom.getDonkeyKongs()) {
 			if((dk.getPosition().getY() == manel.getPosition().getY()) && (dk.getPosition().getX() + 1 == manel.getPosition().getX()) && (dk.getPosition().getX() < manel.getPosition().getX()) || dk.getPosition().equals(manel.getPosition())) {
 				manel.removeLife(dk.getDamage());
 				dk.removeLife(manel.getDamage());
-				if(dk.getLife() <= 0) {
-					currentRoom.dkRemove(dk);
-				}
+//				if(dk.getLife() <= 0) {
+//					currentRoom.dkRemove(dk);
+//				}
 							
 				return true;
 			}
@@ -203,6 +231,12 @@ public class GameEngine implements Observer {
 			meat.tick(currentRoom);
 		}
 	};
+	
+	private void processProjectile() {
+		for(Projectile proj : currentRoom.getManel().getProjectiles()) {
+			proj.move();
+		}
+	}
 	
 	private void processBomb() {
 		for(Bomb bomb : currentRoom.getDroppedBombs()) {

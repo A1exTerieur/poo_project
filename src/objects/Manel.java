@@ -1,6 +1,8 @@
 package objects;
 
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import pt.iscte.poo.game.Actions;
 import pt.iscte.poo.game.Room;
@@ -17,6 +19,7 @@ public class Manel implements ImageTile {
 	private int damage = 15;
 	private boolean haveTheBomb = false;
 	private Bomb bomb = null;
+	private final List<Projectile> projectile = new ArrayList<>();
 	
 	public Manel(Point2D initialPosition){
 		position = initialPosition;
@@ -81,6 +84,10 @@ public class Manel implements ImageTile {
 		return life;
 	}
 	
+	public List<Projectile> getProjectiles(){
+		return projectile;
+	}
+	
 	public int getGameLife() {
 		return gameLife;
 	}
@@ -140,5 +147,12 @@ public class Manel implements ImageTile {
                 System.out.println("Used item: " + item.getName());
                 room.removeItem(item);
             });
+    }
+    
+    public void shoot(int k) {
+    	switch(k) {
+    	case KeyEvent.VK_H:  ;
+    	case KeyEvent.VK_F: projectile.add(new Fireball(position));
+    	}
     }
 }
