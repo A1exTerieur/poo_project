@@ -147,8 +147,8 @@ public class Manel implements ImageTile {
     
     public void shoot(int k) {
     	switch(k) {
-    		case KeyEvent.VK_H : projectiles.add(new Hammer(position));
-    		case KeyEvent.VK_F: projectile.add(new Fireball(position));
+    		case KeyEvent.VK_H: projectiles.add(new Hammer(position)); break;
+    		case KeyEvent.VK_F: projectiles.add(new Fireball(position)); break;
     	}
     }
     

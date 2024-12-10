@@ -85,7 +85,6 @@ public class GameEngine implements Observer {
 		moveDonkeyKongs(); 
 		moveBats();
 		checkTrap();
-		processProjectile();
 		hitByBanana();
 		processBomb();
 		processGoodMeat();
@@ -100,6 +99,16 @@ public class GameEngine implements Observer {
 	private void checkTrap() {
 		if(currentRoom.isTrap(manel.getPosition().plus(Direction.DOWN.asVector())) || currentRoom.isTrap(manel.getPosition())) {
 			manel.removeLife(30);
+		}
+	}
+	
+	private void hitByProjectile() {
+		for(DonkeyKong dk: currentRoom.getDonkeyKongs()) {
+			for(Projectile proj : manel.getProjectiles()) {
+				if(dk.getPosition().equals(proj.getPosition())) {
+					dk.removeLife(30);
+				}
+			}
 		}
 	}
 
@@ -128,23 +137,6 @@ public class GameEngine implements Observer {
 		if(manel.getGameLife() == 0) {
 			manel = new Manel(currentRoom.getHeroStartingPosition());
 			loadRoom("room0.txt");
-		}
-
-	}
-
-	private void checkDkLife() {
-
-		Iterator<DonkeyKong> iterator = currentRoom.getDonkeyKongs().iterator();
-		while (iterator.hasNext()) {
-			DonkeyKong dk = iterator.next();
-
-			if(dk.getLife() <= 0) {
-				iterator.remove();
-				currentRoom.dkRemove(dk);
-			}
-
-
-
 		}
 
 	}
