@@ -12,6 +12,8 @@ import objects.Stair;
 import objects.Sword;
 import objects.Trap;
 import objects.Wall;
+import objects.BadMeat;
+import objects.Bat;
 import objects.Bomb;
 import objects.Consumable;
 import objects.DonkeyKong;
@@ -28,6 +30,7 @@ public class Room {
 
 	private List<LevelElement> levelElements = new ArrayList<>();
 	private List<DonkeyKong> donkeyKongs = new ArrayList<>();
+	private List<Bat> bats = new ArrayList<>();
 	private List<Consumable> levelConsumables = new ArrayList<>();
 
 	private Point2D heroStartingPosition = new Point2D(1, 1);
@@ -70,6 +73,11 @@ public class Room {
 						break;
 					case 'B': // Bombe
 						levelConsumables.add(new Bomb(new Point2D(x, y)));
+						break;
+					case 'b': // Bat
+						Bat bat = new Bat(new Point2D(x, y));
+						bats.add(bat);
+						ImageGUI.getInstance().addImage(bat);
 						break;
 					case 'H': // Position du héros
 						heroStartingPosition = new Point2D(x, y);
@@ -142,6 +150,14 @@ public class Room {
 	                           .filter(bomb -> !bomb.isEnd() && bomb.isDropped())
 	                           .toList();
 	}
+	
+	public List<GoodMeat> getGoodMeat() {
+		
+	    return levelConsumables.stream()
+	                           .filter(GoodMeat.class::isInstance)
+	                           .map(GoodMeat.class::cast)
+	                           .toList();
+	}
 
 	public String getNextRoomFile() {
 		return nextRoomFile;
@@ -150,6 +166,25 @@ public class Room {
 	public Manel getManel() {
 		return manel;
 	}
+	
+	public void transformGoodMeatToBadMeat(Point2D position) {
+	    for (int i = 0; i < levelConsumables.size(); i++) {
+	        Consumable element = levelConsumables.get(i);
+	        if (element.getPosition().equals(position) && element instanceof GoodMeat) {
+	            // Supprimer l'image de GoodMeat
+	            ImageGUI.getInstance().removeImage(element);
+
+	            // Remplacer GoodMeat par BadMeat
+	            BadMeat badMeat = new BadMeat(position);
+	            levelConsumables.set(i, badMeat);
+	            
+	            // Ajouter l'image de BadMeat
+	            ImageGUI.getInstance().addImage(badMeat);
+	            break;
+	        }
+	    }
+	}
+
 	
 	public void transformFakeWallToTrap(Point2D position) {
 	    for (int i = 0; i < levelElements.size(); i++) {
@@ -172,12 +207,21 @@ public class Room {
 	public List<DonkeyKong> getDonkeyKongs() {
 		return donkeyKongs;
 	}
-
+	
+	public List<Bat> getBats(){
+		return bats;
+	}
+	
 	public void dkRemove(DonkeyKong dk) {
 		donkeyKongs.remove(dk);
 		dk.clearBananas();
 		ImageGUI.getInstance().removeImage(dk);
 
+	}
+	
+	public void removeBat(Bat bat) {
+		bats.remove(bat);
+		ImageGUI.getInstance().removeImage(bat);
 	}
 
 	public List<Consumable> getLevelConsumables() {
@@ -186,7 +230,7 @@ public class Room {
 
 	public void checkBombCollisions() {
 
-		System.out.println("DEBUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUG");
+		//System.out.println("DEBUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUG");
 		Bomb bomb = manel.getBomb();
 
 		// Vérifier collision avec Manel
@@ -205,6 +249,8 @@ public class Room {
 		}
 
 	}
+	
+	
 
 	public void removeItem(Consumable item) {
 		levelConsumables.remove(item);
@@ -214,5 +260,10 @@ public class Room {
 	public void spawnBomb(Bomb bomb) {
 		levelConsumables.add(bomb);
 		ImageGUI.getInstance().addImage(bomb);
+	}
+	
+	public void spawnManel(Manel manel) {
+		this.manel = manel;
+		ImageGUI.getInstance().addImage(manel);
 	}
 }
