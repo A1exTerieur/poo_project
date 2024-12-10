@@ -1,6 +1,8 @@
 package objects;
 
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import pt.iscte.poo.game.Actions;
 import pt.iscte.poo.game.Room;
@@ -17,6 +19,7 @@ public class Manel implements ImageTile {
 	private int damage = 15;
 	private boolean haveTheBomb = false;
 	private Bomb bomb = null;
+	private List<Projectile> projectiles = new ArrayList<>();
 	
 	public Manel(Point2D initialPosition){
 		position = initialPosition;
@@ -141,4 +144,21 @@ public class Manel implements ImageTile {
                 room.removeItem(item);
             });
     }
+    
+    public void shoot(int k) {
+    	switch(k) {
+    		case KeyEvent.VK_H : projectiles.add(new Hammer(position));
+    	}
+    }
+    
+    public void updateProjectiles() {
+    	for(Projectile proj : projectiles) {
+			proj.move();
+			
+		}
+    }
+    
+    public List<Projectile> getProjectiles() {
+		return projectiles;
+	}
 }
